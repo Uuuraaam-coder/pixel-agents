@@ -21,11 +21,11 @@ function CharacterSprite({ role, busy = false }: { role: RoleId; busy?: boolean 
 type ChatMessage = { role: 'user' | 'assistant'; content: string };
 const CHAT_STORAGE_KEY = 'personal-pixel-office-chat-v1';
 const STORAGE_KEY = 'personal-pixel-office-notes-v1';
-const roles: { id: RoleId; title: string; subtitle: string; icon: string; color: string }[] = [
-  { id: 'finance', title: '재무', subtitle: '예산과 자산을 정리해요', icon: '💰', color: '#f9dfa4' },
-  { id: 'daily', title: '일상', subtitle: '계획과 할 일을 기억해요', icon: '☕', color: '#f8b9c9' },
-  { id: 'work', title: '업무', subtitle: '프로젝트 기록을 모아요', icon: '💼', color: '#b7d5f7' },
-  { id: 'health', title: '건강', subtitle: '생활 기록을 살펴봐요', icon: '🌱', color: '#b8e4c3' },
+const roles: { id: RoleId; title: string; subtitle: string; icon: string }[] = [
+  { id: 'finance', title: '재무', subtitle: '예산과 자산을 정리해요', icon: '💰' },
+  { id: 'daily', title: '일상', subtitle: '계획과 할 일을 기억해요', icon: '☕' },
+  { id: 'work', title: '업무', subtitle: '프로젝트 기록을 모아요', icon: '💼' },
+  { id: 'health', title: '건강', subtitle: '생활 기록을 살펴봐요', icon: '🌱' },
 ];
 function isRoleId(value: unknown): value is RoleId {
   return roles.some((role) => role.id === value);
@@ -181,7 +181,7 @@ export function PersonalOfficePanel() {
           <div className="personal-office-rooms" aria-label="AI 직원 선택">
             {roles.map((item) => (
               <button key={item.id} type="button" className={'personal-office-role ' + (role === item.id ? 'selected' : '')}
-                style={{ backgroundColor: item.color }} onClick={() => setRole(item.id)} aria-pressed={role === item.id}>
+                onClick={() => setRole(item.id)} aria-pressed={role === item.id}>
                 <span className="personal-office-avatar" aria-hidden="true">{item.icon}</span>
                 <strong>{item.title}</strong>
                 <small>{notes.filter((note) => note.role === item.id).length}개 기록</small>
