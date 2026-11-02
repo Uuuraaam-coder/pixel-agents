@@ -38,8 +38,8 @@ export function registerPersonalOfficeGpt(app: FastifyInstance, token: string): 
       request.headers.authorization !== 'Bearer ' + token) {
       return reply.code(403).send({ error: '접근이 허용되지 않았습니다.' });
     }
-    const key = process.env.OPENAI_API_KEY;
-    if (!key) return reply.code(503).send({ error: 'OPENAI_API_KEY 환경변수를 먼저 설정해야 합니다.' });
+    const key = process.env.OPENROUTER_API_KEY;
+    if (!key) return reply.code(503).send({ error: 'OPENROUTER_API_KEY 환경변수를 먼저 설정해야 합니다.' });
     const { role, message, context = [], history = [] } = request.body;
     const input = [
       ...history.map((entry) => ({ role: entry.role, content: entry.content })),
@@ -48,31 +48,27 @@ export function registerPersonalOfficeGpt(app: FastifyInstance, token: string): 
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), 45000);
     try {
-      const response = await fetch('https://api.openai.com/v1/responses', {
+      const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
         method: 'POST',
         headers: { Authorization: 'Bearer ' + key, 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          model: process.env.OPENAI_MODEL || 'gpt-4.1-mini',
-          store: false,
-          max_output_tokens: 900,
-          instructions: '항상 한국어로 답하세요. 사용자 정보는 요청된 응답을 위해서만 사용하고 기억 저장을 주장하지 마세요. ' +
-            roleInstructions[role] + '\n사용자가 선택하여 전달한 참고 기록:\n' + context.join('\n'),
-          input,
+          model: process.env.OPENROUTER_MODEL || 'openai/gpt-4.1-mini',
+          max_tokens: 900,
+          messages: [{ role: 'system', content: '항상 한국어로 답하세요. 사용자 정보는 요청된 응답을 위해서만 사용하고 기억 저장을 주장하지 마세요. ' + roleInstructions[role] + '\n사용자가 선택하여 전달한 참고 기록:\n' + context.join('\n') }, ...input],
         }),
         signal: controller.signal,
       });
       if (!response.ok) {
         return reply.code(response.status === 429 ? 429 : 502).send({
-          error: response.status === 429 ? 'API 사용 한도에 도달했습니다.' : 'GPT API 요청에 실패했습니다. API 키, 모델 및 결제 설정을 확인하세요.',
+          error: response.status === 429 ? 'API 사용 한도에 도달했습니다.' : 'OpenRouter API 요청에 실패했습니다. API 키, 모델 및 결제 설정을 확인하세요.',
         });
       }
-      const data = await response.json() as { output?: { type?: string; content?: { type?: string; text?: string }[] }[] };
-      const answer = data.output?.flatMap((item) => item.content ?? [])
-        .filter((part) => part.type === 'output_text').map((part) => part.text ?? '').join('\n').trim();
+      const data = await response.json() as { choices?: { message?: { content?: string } }[] };
+      const answer = data.choices?.[0]?.message?.content?.trim();
       if (!answer) return reply.code(502).send({ error: 'GPT의 응답을 읽을 수 없습니다.' });
       return { answer };
     } catch {
-      return reply.code(502).send({ error: 'GPT 연결 중 오류가 발생했습니다.' });
+      return reply.code(502).send({ error: 'OpenRouter 연결 중 오류가 발생했습니다.' });
     } finally {
       clearTimeout(timer);
     }
