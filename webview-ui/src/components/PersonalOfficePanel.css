@@ -1,0 +1,72 @@
+.personal-office-root{position:fixed;right:16px;bottom:16px;z-index:10000;font-family:system-ui,'Malgun Gothic',sans-serif;color:#403b4c}
+.personal-office-toggle{background:#f6d6e3;border:3px solid #51455e;border-radius:12px;box-shadow:3px 4px 0 #51455e;padding:11px 15px;font-size:14px;font-weight:800;cursor:pointer}
+.personal-office-dialog{position:absolute;bottom:58px;right:0;width:min(410px,calc(100vw - 32px));max-height:min(700px,calc(100vh - 92px));overflow:auto;background:#fffaf2;border:3px solid #51455e;border-radius:16px;box-shadow:6px 7px 0 #51455e;padding:16px}
+.personal-office-header{display:flex;align-items:start;justify-content:space-between;gap:8px}.personal-office-header h2{font-size:19px;margin:0}.personal-office-header p,.personal-office-detail>p{font-size:12px;color:#706878;margin:5px 0 12px}.personal-office-pill{border-radius:12px;padding:5px 8px;background:#f5e7a8;font-size:10px;white-space:nowrap}
+.personal-office-rooms{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin:10px 0 16px}.personal-office-role{border:2px solid #736678;border-radius:12px;padding:12px 3px;display:flex;align-items:center;flex-direction:column;gap:5px;cursor:pointer;color:#39323d}.personal-office-role.selected{outline:3px solid #d47ba8;outline-offset:1px;transform:translateY(-2px)}.personal-office-avatar{font-size:27px;filter:drop-shadow(1px 2px 0 #ffffffaa)}.personal-office-role strong{font-size:13px}.personal-office-role small{font-size:10px}
+.personal-office-detail{background:#fff;border:2px solid #e5dce4;border-radius:12px;padding:12px}.personal-office-detail h3{font-size:16px;margin:0}.personal-office-detail label{display:block;font-size:12px;font-weight:700;margin:8px 0}.personal-office-detail textarea{display:block;resize:vertical;width:100%;box-sizing:border-box;border:1px solid #b8a8ba;border-radius:7px;padding:9px;font:inherit;font-size:12px;color:#302a36;background:white}.personal-office-save{margin:9px 0;padding:8px 13px;border:0;border-radius:8px;background:#51455e;color:#fff;font-weight:700;cursor:pointer}.personal-office-save:disabled{opacity:.45;cursor:not-allowed}
+.personal-office-notes{max-height:190px;overflow:auto}.personal-office-empty{font-size:12px;color:#827784}.personal-office-note{border-top:1px solid #e9dfe8;padding:9px 0}.personal-office-note p{font-size:12px;white-space:pre-wrap;overflow-wrap:anywhere;margin:0 0 7px}.personal-office-note div{display:flex;justify-content:space-between;align-items:center}.personal-office-note time{font-size:10px;color:#827784}.personal-office-note button,.personal-office-footer button{background:transparent;border:1px solid #b7a4b4;border-radius:6px;padding:5px 8px;cursor:pointer;font-size:11px}
+.personal-office-footer{padding-top:10px}.personal-office-footer p{font-size:11px;line-height:1.5;color:#786f79}.personal-office-footer [role=alert]{color:#a51b35}
+
+/* Small original pixel-inspired characters: no third-party character assets. */
+.personal-office-pixel-room{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:14px;background:repeating-linear-gradient(0deg,#f1e6cf 0 28px,#e7d8bb 28px 30px);border:3px solid #86745f;border-radius:10px;margin:0 0 14px}
+.personal-office-desk{display:flex;align-items:center;flex-direction:column;min-height:96px;background:#fdf4e8bb;border:2px solid #a99985;border-radius:6px;position:relative;cursor:pointer;padding:8px;color:#3e3540}
+.personal-office-desk.active{border-color:#b74f83;box-shadow:0 0 0 2px #ffd0e3 inset}
+.personal-office-pixel-person{position:relative;width:35px;height:34px;border:4px solid #66525b;border-radius:12px 12px 9px 9px;image-rendering:pixelated;box-shadow:0 4px 0 #ffffff88}
+.pixel-eye{position:absolute;top:11px;width:4px;height:6px;background:#544451}.pixel-eye.left{left:7px}.pixel-eye.right{right:7px}
+.personal-office-desk-table{font-size:25px;line-height:25px;color:#896c51;text-shadow:1px 2px #fff0de}
+.personal-office-desk-label{font-size:11px;font-weight:800}
+.personal-office-search{display:block;width:100%;box-sizing:border-box;padding:8px;border:1px solid #b8a8ba;border-radius:7px;background:#fff;font:inherit;font-size:12px}
+.personal-office-backup{display:flex;align-items:center;flex-wrap:wrap;gap:8px}
+.personal-office-backup label{background:transparent;border:1px solid #b7a4b4;border-radius:6px;padding:5px 8px;cursor:pointer;font-size:11px}
+.personal-office-backup input[type=file]{position:absolute;width:1px;height:1px;clip-path:inset(50%);overflow:hidden}
+.personal-office-backup label:focus-within{outline:2px solid #a8668a}
+
+.personal-office-chat{background:#fff;border:2px solid #edcede;border-radius:12px;padding:12px;margin-bottom:12px}
+.personal-office-chat h3{margin:0;font-size:15px}.personal-office-chat>p{font-size:11px;color:#766575}
+.personal-office-chat-messages{background:#fff9f4;border:1px solid #e1d1d8;border-radius:9px;padding:9px;max-height:230px;overflow-y:auto;margin:10px 0}
+.personal-office-chat-messages>p{font-size:12px;color:#7a7077}
+.personal-office-chat-message{margin:8px 0;padding:8px;border-radius:8px;font-size:12px;white-space:pre-wrap;overflow-wrap:anywhere}
+.personal-office-chat-message.user{background:#e9f2ff;margin-left:16px}
+.personal-office-chat-message.assistant{background:#f7e7ed;margin-right:16px}
+.personal-office-chat-message strong{display:block;margin-bottom:4px}
+.personal-office-chat-message span{display:block;line-height:1.5}
+.personal-office-chat textarea{width:100%;box-sizing:border-box;border:1px solid #b8a8ba;border-radius:7px;background:white;color:#302a36;padding:8px;resize:vertical;font:inherit;font-size:12px}
+.personal-office-context-check{display:flex;gap:7px;align-items:center;margin:10px 0;font-size:11px}
+.personal-office-clear{font-size:11px;background:transparent;border:1px solid #b8a8ba;border-radius:6px;padding:8px;cursor:pointer;margin-left:8px}
+.personal-office-chat [role=alert]{font-size:11px;color:#a51b35}
+
+/* Optional personal fan sprites: Codex pet v2, 8 cols x 11 rows, 192x208 per cell. */
+.personal-office-sprite{display:block;width:48px;height:52px;position:relative;image-rendering:pixelated}
+.personal-office-sprite-frame{display:block;width:48px;height:52px;background-repeat:no-repeat;background-size:384px 572px;background-position:0 0;animation:personal-office-idle 1.2s steps(1) infinite}
+.personal-office-sprite.working .personal-office-sprite-frame{background-position:0 -364px;animation:personal-office-working .8s steps(1) infinite}
+.personal-office-sprite-fallback{display:flex;align-items:center;justify-content:center;width:48px;height:52px;font-size:30px}
+@keyframes personal-office-idle{0%{background-position:0 0}16%{background-position:-48px 0}33%{background-position:-96px 0}50%{background-position:-144px 0}66%{background-position:-192px 0}83%{background-position:-240px 0}}
+@keyframes personal-office-working{0%{background-position:0 -364px}16%{background-position:-48px -364px}33%{background-position:-96px -364px}50%{background-position:-144px -364px}66%{background-position:-192px -364px}83%{background-position:-240px -364px}}
+@media(prefers-reduced-motion:reduce){.personal-office-sprite-frame{animation:none!important}}
+
+.personal-office-role:nth-child(1){background-color:#f9dfa4}
+.personal-office-role:nth-child(2){background-color:#f8b9c9}
+.personal-office-role:nth-child(3){background-color:#b7d5f7}
+.personal-office-role:nth-child(4){background-color:#b8e4c3}
+
+/* Visible desk motion even if a source sprite uses near-identical idle frames. */
+.personal-office-desk .personal-office-sprite{animation:personal-office-stroll 6s ease-in-out infinite;transform-origin:center bottom}
+.personal-office-desk:nth-child(2) .personal-office-sprite{animation-delay:-1.7s}
+.personal-office-desk:nth-child(3) .personal-office-sprite{animation-delay:-3.1s}
+.personal-office-desk:nth-child(4) .personal-office-sprite{animation-delay:-4.4s}
+.personal-office-desk .personal-office-sprite.working{animation:personal-office-type .32s ease-in-out infinite alternate}
+@keyframes personal-office-stroll{
+  0%,10%,90%,100%{transform:translate(0,0)}
+  18%{transform:translate(-12px,-3px)}
+  26%{transform:translate(-16px,0)}
+  36%{transform:translate(-7px,-2px)}
+  48%{transform:translate(11px,0)}
+  60%{transform:translate(16px,-3px)}
+  72%{transform:translate(8px,0)}
+  82%{transform:translate(0,-2px)}
+}
+@keyframes personal-office-type{from{transform:translateY(0)}to{transform:translateY(-4px)}}
+@media(prefers-reduced-motion:reduce){
+  .personal-office-desk .personal-office-sprite{animation:none}
+  .personal-office-desk .personal-office-sprite.working{animation:none}
+}
