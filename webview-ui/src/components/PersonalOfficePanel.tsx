@@ -3,6 +3,21 @@ import './PersonalOfficePanel.css';
 
 type RoleId = 'finance' | 'daily' | 'work' | 'health';
 type Note = { id: string; role: RoleId; text: string; createdAt: string };
+const characterAssetIds: Record<RoleId, string> = {
+  finance: 'chiikawa', daily: 'hachiware', work: 'usagi', health: 'momonga',
+};
+function CharacterSprite({ role, busy = false }: { role: RoleId; busy?: boolean }) {
+  const [available, setAvailable] = useState(false);
+  const url = './personal-characters/' + characterAssetIds[role] + '.png';
+  return (
+    <span className={'personal-office-sprite ' + (busy ? 'working' : '')} aria-hidden="true">
+      <img src={url} alt="" onLoad={() => setAvailable(true)} onError={() => setAvailable(false)}
+        style={{ display: 'none' }} />
+      {available ? <span className="personal-office-sprite-frame" style={{ backgroundImage: 'url("' + url + '")' }} /> :
+        <span className="personal-office-sprite-fallback">{role === 'finance' ? '🐹' : role === 'daily' ? '🐱' : role === 'work' ? '🐰' : '🐿️'}</span>}
+    </span>
+  );
+}
 type ChatMessage = { role: 'user' | 'assistant'; content: string };
 const CHAT_STORAGE_KEY = 'personal-pixel-office-chat-v1';
 const STORAGE_KEY = 'personal-pixel-office-notes-v1';
@@ -178,9 +193,7 @@ export function PersonalOfficePanel() {
               <button key={item.id} type="button" onClick={() => setRole(item.id)}
                 className={'personal-office-desk ' + (role === item.id ? 'active' : '')}
                 aria-label={item.title + ' 직원 선택'} aria-pressed={role === item.id}>
-                <span className="personal-office-pixel-person" style={{ backgroundColor: item.color }} aria-hidden="true">
-                  <i className="pixel-eye left" /><i className="pixel-eye right" />
-                </span>
+                <CharacterSprite role={item.id} busy={chatBusy && role === item.id} />
                 <span className="personal-office-desk-table" aria-hidden="true">▤</span>
                 <span className="personal-office-desk-label">{item.title}</span>
               </button>
