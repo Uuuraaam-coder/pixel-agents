@@ -43,3 +43,8 @@
 @keyframes personal-office-idle{0%{background-position:0 0}16%{background-position:-48px 0}33%{background-position:-96px 0}50%{background-position:-144px 0}66%{background-position:-192px 0}83%{background-position:-240px 0}}
 @keyframes personal-office-working{0%{background-position:0 -364px}16%{background-position:-48px -364px}33%{background-position:-96px -364px}50%{background-position:-144px -364px}66%{background-position:-192px -364px}83%{background-position:-240px -364px}}
 @media(prefers-reduced-motion:reduce){.personal-office-sprite-frame{animation:none!important}}
+
+.personal-office-role:nth-child(1){background-color:#f9dfa4}
+.personal-office-role:nth-child(2){background-color:#f8b9c9}
+.personal-office-role:nth-child(3){background-color:#b7d5f7}
+.personal-office-role:nth-child(4){background-color:#b8e4c3}
