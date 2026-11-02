@@ -12,6 +12,7 @@ import type {
   SetHooksEnabledSideEffect,
 } from './clientMessageHandler.js';
 import { handleClientMessage } from './clientMessageHandler.js';
+import { registerPersonalOfficeGpt } from './personalOfficeGpt.js';
 import {
   HOOK_API_PREFIX,
   MAX_HOOK_BODY_SIZE,
@@ -107,6 +108,7 @@ export async function createHttpServer(options: HttpServerOptions): Promise<Http
   const allowedHostnames = privilegedHostnames(host, options.allowedHosts ?? []);
 
   registerHealthRoute(app);
+  if (!options.embedded) registerPersonalOfficeGpt(app, options.token);
   registerHookRoute(app, options);
   registerWebSocketRoute(app, options, allowedHostnames);
   registerTerminalRoutes(app, {
