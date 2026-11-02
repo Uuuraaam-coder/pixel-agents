@@ -3,6 +3,8 @@ import './PersonalOfficePanel.css';
 
 type RoleId = 'finance' | 'daily' | 'work' | 'health';
 type Note = { id: string; role: RoleId; text: string; createdAt: string };
+type ChatMessage = { role: 'user' | 'assistant'; content: string };
+const CHAT_STORAGE_KEY = 'personal-pixel-office-chat-v1';
 const STORAGE_KEY = 'personal-pixel-office-notes-v1';
 const roles: { id: RoleId; title: string; subtitle: string; icon: string; color: string }[] = [
   { id: 'finance', title: '재무', subtitle: '예산과 자산을 정리해요', icon: '💰', color: '#f9dfa4' },
@@ -33,6 +35,29 @@ export function PersonalOfficePanel() {
   const [search, setSearch] = useState('');
   const [importMessage, setImportMessage] = useState('');
   const [storageError, setStorageError] = useState(false);
+  const [chatDraft, setChatDraft] = useState('');
+  const [chatBusy, setChatBusy] = useState(false);
+  const [chatError, setChatError] = useState('');
+  const [shareNotes, setShareNotes] = useState(false);
+  const [chat, setChat] = useState<Record<RoleId, ChatMessage[]>>(() => {
+    const empty: Record<RoleId, ChatMessage[]> = { finance: [], daily: [], work: [], health: [] };
+    try {
+      const raw: unknown = JSON.parse(localStorage.getItem(CHAT_STORAGE_KEY) ?? '{}');
+      if (!raw || typeof raw !== 'object') return empty;
+      for (const id of ['finance', 'daily', 'work', 'health'] as const) {
+        const entries = (raw as Record<string, unknown>)[id];
+        if (Array.isArray(entries)) empty[id] = entries.filter((entry): entry is ChatMessage =>
+          entry && typeof entry === 'object' &&
+          (entry.role === 'user' || entry.role === 'assistant') &&
+          typeof entry.content === 'string' && entry.content.length <= 5000).slice(-30);
+      }
+    } catch { /* malformed local backup */ }
+    return empty;
+  });
+  useEffect(() => {
+    try { localStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(chat)); }
+    catch { setStorageError(true); }
+  }, [chat]);
   useEffect(() => {
     try {
       window.localStorage.setItem(STORAGE_KEY, JSON.stringify(notes));
@@ -87,6 +112,40 @@ export function PersonalOfficePanel() {
       setImportMessage('백업 형식이 올바르지 않습니다. 기존 기록은 그대로 유지됩니다.');
     }
   };
+  const sendChat = async () => {
+    const message = chatDraft.trim();
+    if (!message || chatBusy) return;
+    const currentRole = role;
+    const history = chat[currentRole].slice(-10);
+    const token = new URLSearchParams(window.location.search).get('token');
+    if (!token) {
+      setChatError('GPT 대화는 현재 standalone 서버의 인증된 URL에서만 사용할 수 있습니다.');
+      return;
+    }
+    setChatBusy(true);
+    setChatError('');
+    try {
+      const response = await fetch('/api/personal-office/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
+        body: JSON.stringify({
+          role: currentRole, message, history,
+          context: shareNotes ? notes.filter((note) => note.role === currentRole).slice(0, 12).map((note) => note.text.slice(0, 1000)) : [],
+        }),
+      });
+      const data = await response.json() as { answer?: string; error?: string };
+      if (!response.ok || !data.answer) throw new Error(data.error ?? 'API 요청에 실패했습니다.');
+      setChat((previous) => ({
+        ...previous,
+        [currentRole]: [...previous[currentRole], { role: 'user', content: message }, { role: 'assistant', content: data.answer! }].slice(-30),
+      }));
+      setChatDraft('');
+    } catch (error) {
+      setChatError(error instanceof Error ? error.message : '연결 오류가 발생했습니다.');
+    } finally {
+      setChatBusy(false);
+    }
+  };
   const selected = roles.find((item) => item.id === role)!;
   const visibleNotes = notes.filter((note) => note.role === role && note.text.toLocaleLowerCase().includes(search.trim().toLocaleLowerCase()));
   return (
@@ -127,6 +186,31 @@ export function PersonalOfficePanel() {
               </button>
             ))}
           </div>
+          <div className="personal-office-chat">
+            <h3>{selected.icon} {selected.title} AI와 대화</h3>
+            <p>GPT API 연결 · 역할별 최근 대화는 이 브라우저에 저장됩니다.</p>
+            <div className="personal-office-chat-messages" aria-live="polite">
+              {chat[role].length === 0 && <p>이 직원과 첫 대화를 시작해 보세요.</p>}
+              {chat[role].map((entry, index) => (
+                <div className={'personal-office-chat-message ' + entry.role} key={index}>
+                  <strong>{entry.role === 'user' ? '나' : selected.title + ' AI'}</strong>
+                  <span>{entry.content}</span>
+                </div>
+              ))}
+            </div>
+            <label className="personal-office-context-check">
+              <input type="checkbox" checked={shareNotes} onChange={(event) => setShareNotes(event.target.checked)} />
+              이 직원의 저장 메모를 GPT에 참고자료로 전송
+            </label>
+            <textarea rows={2} maxLength={4000} value={chatDraft}
+              onChange={(event) => setChatDraft(event.target.value)}
+              placeholder="GPT에게 질문하기 (전송 시 API 사용료 발생)" />
+            <button type="button" className="personal-office-save" onClick={() => { void sendChat(); }}
+              disabled={!chatDraft.trim() || chatBusy}>{chatBusy ? '응답 받는 중…' : 'GPT에게 보내기'}</button>
+            <button type="button" className="personal-office-clear" onClick={() =>
+              setChat((previous) => ({ ...previous, [role]: [] }))}>이 직원 대화 삭제</button>
+            {chatError && <p role="alert">{chatError}</p>}
+          </div>
           <div className="personal-office-detail">
             <h3>{selected.icon} {selected.title} 담당</h3>
             <p>{selected.subtitle}</p>
@@ -152,7 +236,7 @@ export function PersonalOfficePanel() {
             </div>
           </div>
           <footer className="personal-office-footer">
-            <p>현재는 AI 대화가 아닌 로컬 메모 단계입니다. GPT API와 장기 기억 검색은 이후 연결합니다. 브라우저 데이터를 삭제하거나 다른 기기로 이동하면 기록이 유지되지 않을 수 있습니다.</p>
+            <p>GPT API는 별도로 설정한 경우에만 동작합니다. 자동 장기 기억 추출과 기기 간 동기화는 아직 구현되지 않았습니다. 브라우저 데이터를 삭제하거나 다른 기기로 이동하면 기록이 유지되지 않을 수 있습니다.</p>
             {storageError && <p role="alert">저장할 수 없습니다. 브라우저 저장 공간 설정을 확인하세요.</p>}
             <div className="personal-office-backup">
               <button type="button" onClick={exportNotes}>JSON 백업 내보내기</button>
