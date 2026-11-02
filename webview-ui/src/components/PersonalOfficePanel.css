@@ -34,3 +34,12 @@
 .personal-office-context-check{display:flex;gap:7px;align-items:center;margin:10px 0;font-size:11px}
 .personal-office-clear{font-size:11px;background:transparent;border:1px solid #b8a8ba;border-radius:6px;padding:8px;cursor:pointer;margin-left:8px}
 .personal-office-chat [role=alert]{font-size:11px;color:#a51b35}
+
+/* Optional personal fan sprites: Codex pet v2, 8 cols x 11 rows, 192x208 per cell. */
+.personal-office-sprite{display:block;width:48px;height:52px;position:relative;image-rendering:pixelated}
+.personal-office-sprite-frame{display:block;width:48px;height:52px;background-repeat:no-repeat;background-size:384px 572px;background-position:0 0;animation:personal-office-idle 1.2s steps(1) infinite}
+.personal-office-sprite.working .personal-office-sprite-frame{background-position:0 -364px;animation:personal-office-working .8s steps(1) infinite}
+.personal-office-sprite-fallback{display:flex;align-items:center;justify-content:center;width:48px;height:52px;font-size:30px}
+@keyframes personal-office-idle{0%{background-position:0 0}16%{background-position:-48px 0}33%{background-position:-96px 0}50%{background-position:-144px 0}66%{background-position:-192px 0}83%{background-position:-240px 0}}
+@keyframes personal-office-working{0%{background-position:0 -364px}16%{background-position:-48px -364px}33%{background-position:-96px -364px}50%{background-position:-144px -364px}66%{background-position:-192px -364px}83%{background-position:-240px -364px}}
+@media(prefers-reduced-motion:reduce){.personal-office-sprite-frame{animation:none!important}}
