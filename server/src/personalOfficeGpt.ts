@@ -34,7 +34,9 @@ export function registerPersonalOfficeGpt(app: FastifyInstance, token: string): 
     // Never accept a request from an unrelated browser origin.
     const origin = request.headers.origin;
     const host = request.headers.host;
-    if (!origin || !host || new URL(origin).host !== host ||
+    let originHost = '';
+    try { originHost = origin ? new URL(origin).host : ''; } catch { /* invalid origin */ }
+    if (!originHost || !host || originHost !== host ||
       request.headers.authorization !== 'Bearer ' + token) {
       return reply.code(403).send({ error: '접근이 허용되지 않았습니다.' });
     }
