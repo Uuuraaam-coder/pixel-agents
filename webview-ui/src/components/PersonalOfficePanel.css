@@ -48,3 +48,25 @@
 .personal-office-role:nth-child(2){background-color:#f8b9c9}
 .personal-office-role:nth-child(3){background-color:#b7d5f7}
 .personal-office-role:nth-child(4){background-color:#b8e4c3}
+
+/* Visible desk motion even if a source sprite uses near-identical idle frames. */
+.personal-office-desk .personal-office-sprite{animation:personal-office-stroll 6s ease-in-out infinite;transform-origin:center bottom}
+.personal-office-desk:nth-child(2) .personal-office-sprite{animation-delay:-1.7s}
+.personal-office-desk:nth-child(3) .personal-office-sprite{animation-delay:-3.1s}
+.personal-office-desk:nth-child(4) .personal-office-sprite{animation-delay:-4.4s}
+.personal-office-desk .personal-office-sprite.working{animation:personal-office-type .32s ease-in-out infinite alternate}
+@keyframes personal-office-stroll{
+  0%,10%,90%,100%{transform:translate(0,0)}
+  18%{transform:translate(-12px,-3px)}
+  26%{transform:translate(-16px,0)}
+  36%{transform:translate(-7px,-2px)}
+  48%{transform:translate(11px,0)}
+  60%{transform:translate(16px,-3px)}
+  72%{transform:translate(8px,0)}
+  82%{transform:translate(0,-2px)}
+}
+@keyframes personal-office-type{from{transform:translateY(0)}to{transform:translateY(-4px)}}
+@media(prefers-reduced-motion:reduce){
+  .personal-office-desk .personal-office-sprite{animation:none}
+  .personal-office-desk .personal-office-sprite.working{animation:none}
+}
