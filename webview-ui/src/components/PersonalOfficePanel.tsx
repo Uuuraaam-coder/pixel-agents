@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
-
 import './PersonalOfficePanel.css';
+
+import { useEffect, useState } from 'react';
 
 type RoleId = 'finance' | 'daily' | 'work' | 'health';
 type Note = { id: string; role: RoleId; text: string; createdAt: string };
